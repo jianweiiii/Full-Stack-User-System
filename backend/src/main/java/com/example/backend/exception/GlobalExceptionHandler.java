@@ -1,6 +1,7 @@
 package com.example.backend.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,8 +15,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleEmailAlreadyExists(EmailAlreadyExistsException ex){
-        Map<String, String> error = new HashMap<>();
-        error.put("Message", ex.getMessage());
-        return error;
+        return Map.of("message", ex.getMessage());
+    }
+
+
+    // This is going to return a list of error if the user happen to not pass the validation for the fields
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationErrors(MethodArgumentNotValidException ex){
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+
+        return errors;
     }
 }
