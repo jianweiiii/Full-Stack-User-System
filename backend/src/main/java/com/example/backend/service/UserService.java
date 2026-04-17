@@ -1,10 +1,13 @@
 package com.example.backend.service;
 
 
+import com.example.backend.dto.LoginRequest;
+import com.example.backend.dto.LoginResponse;
 import com.example.backend.dto.RegisterRequest;
 import com.example.backend.dto.UserResponse;
 import com.example.backend.entity.User;
 import com.example.backend.exception.EmailAlreadyExistsException;
+import com.example.backend.exception.InvalidCredentialsException;
 import com.example.backend.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +40,23 @@ public class UserService {
                 savedUser.getId(),
                 savedUser.getEmail(),
                 savedUser.getPassword()
+        );
+    }
+
+
+    public LoginResponse login(LoginRequest request){
+        User user = userRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            throw new InvalidCredentialsException("Invalid Email or password");
+        }
+
+        return new LoginResponse(
+                "Login Successful",
+                user.getId(),
+                user.getName(),
+                user.getEmail()
         );
     }
 }

@@ -1,5 +1,7 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.LoginRequest;
+import com.example.backend.dto.LoginResponse;
 import com.example.backend.dto.RegisterRequest;
 import com.example.backend.dto.UserResponse;
 import com.example.backend.entity.User;
@@ -23,5 +25,11 @@ public class UserController {
     @PostMapping("/register")
     public UserResponse registerUser(@Valid @RequestBody RegisterRequest request){
         return userService.register(request);
+    }
+
+
+    @PostMapping("/login")
+    public LoginResponse loginUser(@Valid @RequestBody LoginRequest request){
+        return userService.login(request);
     }
 }
