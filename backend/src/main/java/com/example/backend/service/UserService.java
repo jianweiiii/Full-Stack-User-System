@@ -9,6 +9,7 @@ import com.example.backend.entity.User;
 import com.example.backend.exception.EmailAlreadyExistsException;
 import com.example.backend.exception.InvalidCredentialsException;
 import com.example.backend.repo.UserRepo;
+import com.example.backend.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,12 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder){
+    private final JwtService jwtService;
+
+    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, JwtService jwtService){
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public UserResponse register(RegisterRequest request){
@@ -52,8 +56,11 @@ public class UserService {
             throw new InvalidCredentialsException("Invalid Email or password");
         }
 
+        String token = jwtService.generateToken(user.getEmail());
+
         return new LoginResponse(
                 "Login Successful",
+                token,
                 user.getId(),
                 user.getName(),
                 user.getEmail()
