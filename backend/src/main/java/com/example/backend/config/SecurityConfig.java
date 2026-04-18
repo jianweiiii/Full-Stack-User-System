@@ -32,12 +32,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/users/register",
-                                "/api/users/login",
+                                "/api/auth/register",
+                                "/api/auth/login",
                                 "/hello",
                                 "/h2-console/**"
                         ).permitAll()
-                        .requestMatchers("/api/users/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter,

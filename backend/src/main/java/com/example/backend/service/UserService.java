@@ -1,10 +1,7 @@
 package com.example.backend.service;
 
 
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.dto.LoginResponse;
-import com.example.backend.dto.RegisterRequest;
-import com.example.backend.dto.UserResponse;
+import com.example.backend.dto.*;
 import com.example.backend.entity.User;
 import com.example.backend.exception.EmailAlreadyExistsException;
 import com.example.backend.exception.InvalidCredentialsException;
@@ -13,6 +10,8 @@ import com.example.backend.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -77,5 +76,43 @@ public class UserService {
                 user.getName(),
                 user.getEmail()
         );
+    }
+
+
+    public List<AdminUserResponse> getAllUsers(){
+        return userRepo.findAll()
+                .stream()
+                .map(user -> new AdminUserResponse(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getRole()
+                ))
+                .toList();
+    }
+
+    public AdminUserResponse updateUser(Long id, UpdateUserRequest request){
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+
+        User updatedUser = userRepo.save(user);
+
+        return new AdminUserResponse(
+                updatedUser.getId(),
+                updatedUser.getName(),
+                updatedUser.getEmail(),
+                updatedUser.getRole()
+        );
+    }
+
+    public void deleteUser(Long id){
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        userRepo.delete(user);
     }
 }

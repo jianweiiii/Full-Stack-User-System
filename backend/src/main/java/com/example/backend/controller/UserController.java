@@ -20,16 +20,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public UserResponse registerUser(@Valid @RequestBody RegisterRequest request){
-        return userService.register(request);
-    }
-
-
-    @PostMapping("/login")
-    public LoginResponse loginUser(@Valid @RequestBody LoginRequest request){
-        return userService.login(request);
-    }
 
     @GetMapping("/profile")
     public UserResponse profile(){
@@ -40,8 +30,5 @@ public class UserController {
         return userService.getCurrentUser(email);
     }
 
-    @GetMapping("/admin")
-    public String adminOnly(){
-        return "i am admin";
-    }
+
 }
