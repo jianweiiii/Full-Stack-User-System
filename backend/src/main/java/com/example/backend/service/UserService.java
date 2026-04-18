@@ -66,4 +66,15 @@ public class UserService {
                 user.getEmail()
         );
     }
+
+    public UserResponse getCurrentUser(String email){
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
+    }
 }

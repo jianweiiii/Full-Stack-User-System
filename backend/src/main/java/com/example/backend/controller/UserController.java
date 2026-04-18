@@ -7,10 +7,8 @@ import com.example.backend.dto.UserResponse;
 import com.example.backend.entity.User;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -32,4 +30,14 @@ public class UserController {
     public LoginResponse loginUser(@Valid @RequestBody LoginRequest request){
         return userService.login(request);
     }
+
+    @GetMapping("/profile")
+    public UserResponse profile(){
+        String email = (String) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        return userService.getCurrentUser(email);
+    }
+
 }
