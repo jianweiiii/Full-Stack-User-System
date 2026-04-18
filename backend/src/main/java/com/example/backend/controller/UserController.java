@@ -40,4 +40,8 @@ public class UserController {
         return userService.getCurrentUser(email);
     }
 
+    @GetMapping("/admin")
+    public String adminOnly(){
+        return "i am admin";
+    }
 }

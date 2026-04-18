@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 "/hello",
                                 "/h2-console/**"
                         ).permitAll()
+                        .requestMatchers("/api/users/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter,

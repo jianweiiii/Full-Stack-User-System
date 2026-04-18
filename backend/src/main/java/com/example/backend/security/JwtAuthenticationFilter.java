@@ -1,6 +1,9 @@
 package com.example.backend.security;
 
 import com.example.backend.entity.User;
+import com.example.backend.repo.UserRepo;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.List;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,9 +20,11 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final UserRepo userRepo;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepo userRepo) {
         this.jwtService = jwtService;
+        this.userRepo = userRepo;
     }
 
     @Override
@@ -39,14 +44,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String email = jwtService.extractEmail(token);
 
         // if valid, set authentication
-        if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            if(jwtService.isTokenValid(token, email)){
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        email, null, Collections.emptyList()
-                );
+        User user = userRepo.findByEmail(email).orElse(null);
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+        if(user != null && jwtService.isTokenValid(token, email)){
+            List<SimpleGrantedAuthority> authorities = List.of(
+                    new SimpleGrantedAuthority("ROLE_" + user.getRole())
+            );
+
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    email, null, authorities
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
         filterChain.doFilter(request, response);
