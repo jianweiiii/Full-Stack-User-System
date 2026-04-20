@@ -1,7 +1,9 @@
 package com.example.backend.dto;
 
+import com.example.backend.constant.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class UpdateUserRequest {
 
@@ -11,11 +13,10 @@ public class UpdateUserRequest {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "Role is required")
-    private String role;
+    @NotNull(message = "Role is required")
+    private Role role;
 
     public UpdateUserRequest(){
-
     }
 
     public String getName() {
@@ -34,11 +35,17 @@ public class UpdateUserRequest {
         this.email = email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public UpdateUserRequest(String name, String email, Role role) {
+        this.name = name;
+        this.email = email;
         this.role = role;
     }
 }

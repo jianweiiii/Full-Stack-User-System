@@ -1,17 +1,19 @@
 package com.example.backend.dto;
 
+import com.example.backend.constant.Role;
+
 public class AdminUserResponse {
 
     private Long id;
     private String name;
     private String email;
-    private String role;
+    private Role role;
 
     public AdminUserResponse(){
 
     }
 
-    public AdminUserResponse(Long id, String name, String email, String role) {
+    public AdminUserResponse(Long id, String name, String email, Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -30,7 +32,7 @@ public class AdminUserResponse {
         return email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 }

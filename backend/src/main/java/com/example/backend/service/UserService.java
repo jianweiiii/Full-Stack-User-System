@@ -1,10 +1,12 @@
 package com.example.backend.service;
 
 
+import com.example.backend.constant.Role;
 import com.example.backend.dto.*;
 import com.example.backend.entity.User;
 import com.example.backend.exception.EmailAlreadyExistsException;
 import com.example.backend.exception.InvalidCredentialsException;
+import com.example.backend.exception.UserNotFoundException;
 import com.example.backend.repo.UserRepo;
 import com.example.backend.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class UserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole("USER");
+        user.setRole(Role.USER);
 
         User savedUser = userRepo.save(user);
 
@@ -69,7 +71,7 @@ public class UserService {
 
     public UserResponse getCurrentUser(String email){
         User user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return new UserResponse(
                 user.getId(),
@@ -93,7 +95,7 @@ public class UserService {
 
     public AdminUserResponse updateUser(Long id, UpdateUserRequest request){
         User user = userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
@@ -111,7 +113,7 @@ public class UserService {
 
     public void deleteUser(Long id){
         User user = userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userRepo.delete(user);
     }

@@ -36,4 +36,17 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleInvalidCredentialsExpcetion(InvalidCredentialsException ex){
         return Map.of("Message", ex.getMessage());
     }
+
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> userNotFoundException(UserNotFoundException ex){
+        return Map.of("Message", ex.getMessage());
+    }
+
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleInvalidEnum(org.springframework.http.converter.HttpMessageNotReadableException ex) {
+        return Map.of("message", "Invalid request body. Check fields like role and make sure role is USER or ADMIN");
+    }
 }
