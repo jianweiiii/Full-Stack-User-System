@@ -4,13 +4,28 @@ import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import UserPage from "./pages/User";
 import AdminPage from "./pages/Admin";
+import ProtectedRoute from "./component/ProtectedRoute";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
-      <Route path="/user" element={<UserPage />} />
-      <Route path="/admin" element={<AdminPage />} />
+      <Route
+        path="/user"
+        element={
+          <ProtectedRoute allowedRole="USER">
+            <UserPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRole="USER">
+            <UserPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
