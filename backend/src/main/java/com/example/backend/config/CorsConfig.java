@@ -18,7 +18,7 @@ public class CorsConfig {
 
         config.setAllowedOrigins(List.of(
                 "http://localhost:5173",                // local frontend
-                "full-stack-user-system.vercel.app"      // deployed frontend (replace later)
+                "https://full-stack-user-system.vercel.app/"      // deployed frontend (replace later)
         ));
 
         config.setAllowedMethods(List.of(
