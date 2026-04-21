@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function AdminPage() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -22,7 +24,7 @@ function AdminPage() {
   async function handleUpdateUser() {
     try {
       const res = await axios.put(
-        `http://localhost:8080/api/admin/${selectedUser.id}`,
+        `${API_BASE_URL}/api/admin/${selectedUser.id}`,
         {
           name: selectedUser.name,
           email: selectedUser.email,
@@ -50,14 +52,11 @@ function AdminPage() {
     if (!confirmDelete) return;
 
     try {
-      const res = await axios.delete(
-        `http://localhost:8080/api/admin/${user.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const res = await axios.delete(`${API_BASE_URL}/api/admin/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       console.log(res);
       await fetchAllUser();
     } catch (error) {
@@ -67,7 +66,7 @@ function AdminPage() {
 
   async function fetchAllUser() {
     try {
-      const res = await axios.get("http://localhost:8080/api/admin", {
+      const res = await axios.get(`${API_BASE_URL}/api/admin`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
