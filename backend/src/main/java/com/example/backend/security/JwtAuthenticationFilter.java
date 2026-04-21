@@ -28,36 +28,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        System.out.println("JWT filter hit: " + request.getRequestURI());
-        System.out.println("Auth header: " + request.getHeader("Authorization"));
-        // check if header exist
-        if(authHeader == null || !authHeader.startsWith("Bearer")){
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/api/auth/") || path.equals("/hello")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // extract token
-        String token = authHeader.substring(7);
+        final String authHeader = request.getHeader("Authorization");
 
-        //extract email
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = authHeader.substring(7);
         String email = jwtService.extractEmail(token);
 
-        // if valid, set authentication
-        User user = userRepo.findByEmail(email).orElse(null);
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User user = userRepo.findByEmail(email).orElse(null);
 
-        if(user != null && jwtService.isTokenValid(token, email)){
-            List<SimpleGrantedAuthority> authorities = List.of(
-                    new SimpleGrantedAuthority("ROLE_" + user.getRole())
-            );
+            if (user != null && jwtService.isTokenValid(token, email)) {
+                List<SimpleGrantedAuthority> authorities = List.of(
+                        new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                );
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    email, null, authorities
-            );
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                authorities
+                        );
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
         }
 
         filterChain.doFilter(request, response);
