@@ -65,7 +65,8 @@ public class UserService {
                 token,
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
     }
 
