@@ -18,6 +18,7 @@ function LoginPage() {
       const data = res.data;
       console.log(data);
       localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
 
       if (data.role === "ADMIN") {
         navigate("/admin");
