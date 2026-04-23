@@ -72,37 +72,70 @@ function LoginPage() {
   }
 
   return (
-    <div>
-      <h2>{isRegister ? "Register Here!" : "Login Here!"}</h2>
-      <form onSubmit={handleSubmit} className="flex justify-around">
-        {isRegister && (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-md bg-slate-950/95 border border-slate-800 shadow-2xl shadow-slate-950/40 backdrop-blur-xl rounded-[2rem] p-8">
+        <div className="text-center mb-6">
+          <p className="text-sm text-cyan-400 uppercase tracking-[0.35em] font-semibold">
+            {isRegister ? "Create account" : "Welcome back"}
+          </p>
+          <h2 className="mt-4 text-3xl font-semibold text-white">
+            {isRegister ? "Start your journey" : "Sign in to continue"}
+          </h2>
+          <p className="mt-2 text-sm text-slate-400">
+            {isRegister
+              ? "Enter your details below to create a new user account."
+              : "Use your email and password to access your dashboard."}
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {isRegister && (
+            <input
+              type="text"
+              placeholder="Name"
+              autoComplete="name"
+              value={name}
+              className="w-full rounded-3xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+              onChange={(e) => setName(e.target.value)}
+            />
+          )}
+
           <input
-            type="text"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            type="email"
+            placeholder="Email"
+            autoComplete="email"
+            value={email}
+            className="w-full rounded-3xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+            onChange={(e) => setEmail(e.target.value)}
           />
-        )}
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="bg-red-500 text-white px-4"
-        ></input>
-        <input
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        ></input>
+          <input
+            type="password"
+            placeholder="Password"
+            autoComplete={isRegister ? "new-password" : "current-password"}
+            value={password}
+            className="w-full rounded-3xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button type="submit">{isRegister ? "Register" : "Login"}</button>
-        <button type="button" onClick={handleToggleMode}>
-          {isRegister ? "Back to Login" : "Go to Register"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-full rounded-3xl bg-cyan-500 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-400"
+          >
+            {isRegister ? "Register" : "Login"}
+          </button>
+
+          <button
+            type="button"
+            className="w-full rounded-3xl border border-slate-700 bg-slate-900/90 py-3 text-sm font-medium text-slate-200 transition hover:border-cyan-400 hover:bg-slate-900"
+            onClick={handleToggleMode}
+          >
+            {isRegister
+              ? "Already have an account? Login"
+              : "Need an account? Register"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
